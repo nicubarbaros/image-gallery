@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import useWindowSize from "../hooks/useWindowSize";
-import { sampleData } from "@/sampleData";
+import { SampleDataType } from "@/sampleData";
 
 const IMAGE_WIDTH = 300;
 const IMAGE_HEIGHT = 400;
@@ -11,26 +11,29 @@ const IMAGE_HEIGHT = 400;
 type Props = {
   interval?: number;
   animationDuration?: number;
+  data: SampleDataType;
+  activeIndex: number;
+  setIndex: (newIndex: number) => void;
 };
 
-export function AutoCarousel({ interval = 2000, animationDuration = 1 }: Props) {
-  const [centerImageIndex, setIndex] = useState(1);
+export function AutoCarousel({ interval = 2000, animationDuration = 1, data, setIndex, activeIndex }: Props) {
   const [isAnimating, setIsAnimating] = useState(false);
 
   const { width, height } = useWindowSize();
   useEffect(() => {
     const cycleImages = () => {
+      console.log("afeafea");
       if (isAnimating) {
         return;
       }
       setIsAnimating(true);
-      setIndex((prev) => (prev + 1) % sampleData.length);
+      setIndex((activeIndex + 1) % data.length);
     };
 
     const intervalId = setInterval(cycleImages, interval);
 
     return () => clearInterval(intervalId);
-  }, [isAnimating, interval]);
+  }, [isAnimating, interval, activeIndex]);
 
   // const handleNext = () => {
   //   if (isAnimating) return;
@@ -46,20 +49,12 @@ export function AutoCarousel({ interval = 2000, animationDuration = 1 }: Props) 
   //   setIndex((prev) => (prev - 1 + images.length) % images.length);
   // };
 
-  const rearrangeArray = useMemo(() => {
-    const [first, ...rest] = sampleData;
-
-    const middleIndex = rest.length % 2 === 0 ? Math.floor(rest.length / 2) : Math.floor(rest.length / 2) + 1;
-
-    return [...rest.slice(0, middleIndex - 1), first, ...rest.slice(middleIndex - 1)];
-  }, []);
-
   // TODO: generate it based on sampleData size
   const positions = useMemo(
     () => [
       { x: width / 2 + IMAGE_WIDTH, y: -1 * (height / 2 + IMAGE_HEIGHT), opacity: 0 },
       { x: width / 2 - IMAGE_WIDTH / 2, y: -1 * (height / 2 - IMAGE_HEIGHT / 2) },
-      { x: 0, y: 0, rotation: 1, scale: 1.5 },
+      { x: 0, y: 0, rotation: 1, scale: 1.5, text: true },
       { x: -1 * (width / 2 - IMAGE_WIDTH / 2), y: height / 2 - IMAGE_HEIGHT / 2 },
       { x: -1 * (width / 2 + IMAGE_WIDTH), y: height / 2 + IMAGE_HEIGHT, opacity: 0 },
     ],
@@ -67,41 +62,30 @@ export function AutoCarousel({ interval = 2000, animationDuration = 1 }: Props) 
   );
 
   return (
-    <div className="relative w-screen h-screen overflow-hidden">
-      {/* <button className="absolute top-1/2 left-5 bg-gray-700 text-white p-2 rounded z-10" onClick={handlePrev}>
-        Prev
-      </button> */}
-      <Image
-        src={rearrangeArray[centerImageIndex].url}
-        fill
-        alt="Background active image"
-        className="absolute top-0 right-0 left-0 bottom-0 object-cover blur-[40px] scale-[1.2]"
-      />
-      <div className="relative w-full h-full flex justify-center items-center">
-        {/* <AnimatePresence initial={false}> */}
-        {rearrangeArray.map(({ url }, index) => (
-          <motion.div
-            key={url}
-            initial={{ x: 0, y: 0 }}
-            animate={{
-              x: positions[(index + centerImageIndex) % sampleData.length].x,
-              y: positions[(index + centerImageIndex) % sampleData.length].y,
-              opacity: positions[(index + centerImageIndex) % sampleData.length].opacity ?? 1,
-              scale: positions[(index + centerImageIndex) % sampleData.length].scale ?? 1,
-            }}
-            transition={{ duration: animationDuration, ease: "easeInOut" }}
-            className={`absolute w-[300px] h-[400px] p-2`}
-            onAnimationComplete={() => {
-              setIsAnimating(false);
-            }}
-          >
-            <div className="relative w-full h-full">
-              <Image src={url} alt={`Image`} fill className="border rounded border-black" />
-            </div>
-          </motion.div>
-        ))}
-        {/* </AnimatePresence> */}
-      </div>
+    <div className="relative w-full h-full flex justify-center items-center">
+      {/* <AnimatePresence initial={false}> */}
+      {data.map(({ url, text }, index) => (
+        <motion.div
+          key={url}
+          initial={{ x: 0, y: 0 }}
+          animate={{
+            x: positions[(index + activeIndex) % data.length].x,
+            y: positions[(index + activeIndex) % data.length].y,
+            opacity: positions[(index + activeIndex) % data.length].opacity ?? 1,
+            scale: positions[(index + activeIndex) % data.length].scale ?? 1,
+          }}
+          transition={{ duration: animationDuration, ease: "easeInOut" }}
+          className={`absolute w-[300px] h-[400px] p-2`}
+          onAnimationComplete={() => {
+            setIsAnimating(false);
+          }}
+        >
+          <div className="relative w-full h-full">
+            <Image src={url} alt={`Image`} fill className="border rounded border-black" />
+          </div>
+        </motion.div>
+      ))}
+      {/* </AnimatePresence> */}
       {/* <button className="absolute top-1/2 right-5 bg-gray-700 text-white p-2 rounded" onClick={handleNext}>
         Next
       </button> */}

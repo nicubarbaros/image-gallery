@@ -1,10 +1,12 @@
-export const sampleData: {
+export type SampleDataType = {
   url: string;
   text: string;
   author: string;
   client: string;
   date: Date;
-}[] = [
+}[];
+
+export const sampleData: SampleDataType = [
   {
     url: "/assets/images/image01.jpg",
     text: "Everyday flowers",

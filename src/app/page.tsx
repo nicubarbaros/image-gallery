@@ -1,3 +1,5 @@
+import { AutoCarousel } from "./AutoCarousel";
+
 export default function Home() {
-  return <div>Setup</div>;
+  return <AutoCarousel />;
 }

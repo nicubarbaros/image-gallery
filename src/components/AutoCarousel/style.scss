@@ -1,0 +1,5 @@
+@import "../../stylesheets/z-index";
+
+.carousel-container {
+  z-index: z("home-carousel");
+}

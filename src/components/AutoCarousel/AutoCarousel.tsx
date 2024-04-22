@@ -2,8 +2,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import useWindowSize from "../hooks/useWindowSize";
 import { SampleDataType } from "@/sampleData";
+import useWindowSize from "@/hooks/useWindowSize";
+import "./style.scss";
 
 const IMAGE_WIDTH = 300;
 const IMAGE_HEIGHT = 400;
@@ -62,7 +63,7 @@ export function AutoCarousel({ interval = 2000, animationDuration = 1, data, set
   );
 
   return (
-    <div className="relative w-full h-full flex justify-center items-center">
+    <div className="carousel-container relative w-full h-full flex justify-center items-center">
       {/* <AnimatePresence initial={false}> */}
       {data.map(({ url, text }, index) => (
         <motion.div

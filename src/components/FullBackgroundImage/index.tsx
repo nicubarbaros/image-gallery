@@ -1,0 +1,1 @@
+export { FullBackgroundImage } from "./FullBackgroundImage";

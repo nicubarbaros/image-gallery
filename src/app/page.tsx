@@ -1,8 +1,10 @@
 "use client";
 import { sampleData } from "@/sampleData";
-import { AutoCarousel } from "./AutoCarousel";
 import { useMemo, useState } from "react";
 import Image from "next/image";
+import { OutlineTitle } from "@/components/OutlineTitle";
+import { FullBackgroundImage } from "@/components/FullBackgroundImage";
+import { AutoCarousel } from "@/components/AutoCarousel";
 
 export default function Home() {
   const [activeIndex, setIndex] = useState(1);
@@ -17,15 +19,8 @@ export default function Home() {
 
   return (
     <div className="relative w-screen h-screen overflow-hidden">
-      {/* <button className="absolute top-1/2 left-5 bg-gray-700 text-white p-2 rounded z-10" onClick={handlePrev}>
-		Prev
-	</button> */}
-      <Image
-        src={rearrangeArray[activeIndex].url}
-        fill
-        alt="Background active image"
-        className="absolute top-0 right-0 left-0 bottom-0 object-cover blur-[40px] scale-[1.2]"
-      />
+      <FullBackgroundImage src={rearrangeArray[activeIndex].url} />
+      <OutlineTitle text={rearrangeArray[activeIndex].text} />
       <AutoCarousel data={rearrangeArray} activeIndex={activeIndex} setIndex={setIndex} />;
     </div>
   );

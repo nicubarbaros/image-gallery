@@ -1,16 +1,9 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
-import { AnimatePresence, motion, useScroll } from "framer-motion";
+import { motion } from "framer-motion";
 import Image from "next/image";
 import useWindowSize from "../hooks/useWindowSize";
-
-const images = [
-  "/assets/images/image01.jpg",
-  "/assets/images/image02.jpg",
-  "/assets/images/image03.jpg",
-  "/assets/images/image04.jpg",
-  "/assets/images/image05.jpg",
-];
+import { sampleData } from "@/sampleData";
 
 const IMAGE_WIDTH = 300;
 const IMAGE_HEIGHT = 400;
@@ -31,7 +24,7 @@ export function AutoCarousel({ interval = 2000, animationDuration = 1 }: Props) 
         return;
       }
       setIsAnimating(true);
-      setIndex((prev) => (prev + 1) % images.length);
+      setIndex((prev) => (prev + 1) % sampleData.length);
     };
 
     const intervalId = setInterval(cycleImages, interval);
@@ -56,15 +49,10 @@ export function AutoCarousel({ interval = 2000, animationDuration = 1 }: Props) 
   const rearrangeArray = useMemo(() => {
     // Original array
 
-    // Get the first element and the rest of the array
-    const [first, ...rest] = images;
+    const [first, ...rest] = sampleData;
 
-    console.log(first);
-    // Calculate the middle index
     const middleIndex = rest.length % 2 === 0 ? Math.floor(rest.length / 2) : Math.floor(rest.length / 2) + 1;
 
-    console.log(middleIndex);
-    // Create the new array by placing the first element in the middle
     return [...rest.slice(0, middleIndex - 1), first, ...rest.slice(middleIndex - 1)];
   }, []);
 
@@ -89,15 +77,15 @@ export function AutoCarousel({ interval = 2000, animationDuration = 1 }: Props) 
       />
       <div className="relative w-full h-full flex justify-center items-center">
         {/* <AnimatePresence initial={false}> */}
-        {rearrangeArray.map((imageSource, index) => (
+        {rearrangeArray.map(({ url }, index) => (
           <motion.div
-            key={imageSource}
+            key={url}
             initial={{ x: 0, y: 0 }}
             animate={{
-              x: positions[(index + centerImageIndex) % images.length].x,
-              y: positions[(index + centerImageIndex) % images.length].y,
-              opacity: positions[(index + centerImageIndex) % images.length].opacity ?? 1,
-              scale: positions[(index + centerImageIndex) % images.length].scale ?? 1,
+              x: positions[(index + centerImageIndex) % sampleData.length].x,
+              y: positions[(index + centerImageIndex) % sampleData.length].y,
+              opacity: positions[(index + centerImageIndex) % sampleData.length].opacity ?? 1,
+              scale: positions[(index + centerImageIndex) % sampleData.length].scale ?? 1,
             }}
             transition={{ duration: animationDuration, ease: "easeInOut" }}
             className={`absolute w-[300px] h-[400px] p-2`}
@@ -106,7 +94,7 @@ export function AutoCarousel({ interval = 2000, animationDuration = 1 }: Props) 
             }}
           >
             <div className="relative w-full h-full">
-              <Image src={imageSource} alt={`Image`} fill className="border rounded border-black" />
+              <Image src={url} alt={`Image`} fill className="border rounded border-black" />
             </div>
           </motion.div>
         ))}

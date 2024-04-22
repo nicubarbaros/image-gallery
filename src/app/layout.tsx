@@ -1,8 +1,23 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
+import localFont from "next/font/local";
 
-const inter = Inter({ subsets: ["latin"] });
+const tungsten = localFont({
+  src: [
+    {
+      path: "../../public/assets/fonts/Tungsten-Bold.woff2",
+      weight: "700",
+      style: "normal",
+    },
+    {
+      path: "../../public/assets/fonts/Tungsten-Semibold.woff2",
+      weight: "600",
+      style: "normal",
+    },
+  ],
+  variable: "--font-tungsten",
+});
+
+import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Lens & Style Collective - Creative Styling and Photography",
@@ -17,7 +32,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={`${tungsten.variable}`}>{children}</body>
     </html>
   );
 }

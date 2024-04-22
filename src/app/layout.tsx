@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import "../stylesheets/root.scss";
 
 const tungsten = localFont({
   src: [
@@ -18,6 +19,7 @@ const tungsten = localFont({
 });
 
 import "./globals.css";
+import { AnimatePresence } from "framer-motion";
 
 export const metadata: Metadata = {
   title: "Lens & Style Collective - Creative Styling and Photography",

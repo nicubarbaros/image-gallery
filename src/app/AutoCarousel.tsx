@@ -47,8 +47,6 @@ export function AutoCarousel({ interval = 2000, animationDuration = 1 }: Props) 
   // };
 
   const rearrangeArray = useMemo(() => {
-    // Original array
-
     const [first, ...rest] = sampleData;
 
     const middleIndex = rest.length % 2 === 0 ? Math.floor(rest.length / 2) : Math.floor(rest.length / 2) + 1;
@@ -56,13 +54,17 @@ export function AutoCarousel({ interval = 2000, animationDuration = 1 }: Props) 
     return [...rest.slice(0, middleIndex - 1), first, ...rest.slice(middleIndex - 1)];
   }, []);
 
-  const positions = [
-    { x: width / 2 + IMAGE_WIDTH, y: -1 * (height / 2 + IMAGE_HEIGHT), opacity: 0 },
-    { x: width / 2 - IMAGE_WIDTH / 2, y: -1 * (height / 2 - IMAGE_HEIGHT / 2) },
-    { x: 0, y: 0, rotation: 1, scale: 1.5 },
-    { x: -1 * (width / 2 - IMAGE_WIDTH / 2), y: height / 2 - IMAGE_HEIGHT / 2 },
-    { x: -1 * (width / 2 + IMAGE_WIDTH), y: height / 2 + IMAGE_HEIGHT, opacity: 0 },
-  ];
+  // TODO: generate it based on sampleData size
+  const positions = useMemo(
+    () => [
+      { x: width / 2 + IMAGE_WIDTH, y: -1 * (height / 2 + IMAGE_HEIGHT), opacity: 0 },
+      { x: width / 2 - IMAGE_WIDTH / 2, y: -1 * (height / 2 - IMAGE_HEIGHT / 2) },
+      { x: 0, y: 0, rotation: 1, scale: 1.5 },
+      { x: -1 * (width / 2 - IMAGE_WIDTH / 2), y: height / 2 - IMAGE_HEIGHT / 2 },
+      { x: -1 * (width / 2 + IMAGE_WIDTH), y: height / 2 + IMAGE_HEIGHT, opacity: 0 },
+    ],
+    [width, height]
+  );
 
   return (
     <div className="relative w-screen h-screen overflow-hidden">
@@ -70,7 +72,7 @@ export function AutoCarousel({ interval = 2000, animationDuration = 1 }: Props) 
         Prev
       </button> */}
       <Image
-        src={rearrangeArray[centerImageIndex]}
+        src={rearrangeArray[centerImageIndex].url}
         fill
         alt="Background active image"
         className="absolute top-0 right-0 left-0 bottom-0 object-cover blur-[40px] scale-[1.2]"

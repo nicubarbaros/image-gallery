@@ -13,7 +13,7 @@ const variants: Variants = {
   visible: { opacity: 1, transition: { duration: 0.5, ease: [0.77, 0, 0.175, 1], delay: 1 } },
 };
 
-export function OutlineTitle({ text, visible }: Props) {
+export function FullTitle({ text, visible }: Props) {
   const controls = useAnimationControls();
 
   useEffect(() => {
@@ -26,13 +26,13 @@ export function OutlineTitle({ text, visible }: Props) {
   }, [visible]);
 
   return (
-    <motion.div className="outline-title absolute left-2/4 top-2/4 translate-x-[-50%] translate-y-[-50%]">
+    <motion.div className="full-title absolute left-2/4 top-2/4 translate-x-[-50%] translate-y-[-50%] z-10">
       <motion.h1
         initial="hidden"
         animate={controls}
         exit="hidden"
         variants={variants}
-        className="outline-title-stroke font-tungsten font-semibold text-[220px] uppercase"
+        className="font-tungsten font-semibold text-white text-[220px] uppercase"
       >
         {text}
       </motion.h1>

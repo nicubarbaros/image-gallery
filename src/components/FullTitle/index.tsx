@@ -1,0 +1,1 @@
+export { FullTitle } from "./FullTitle";

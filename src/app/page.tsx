@@ -19,8 +19,6 @@ export default function Home() {
 
   return (
     <div className="relative w-screen h-screen overflow-hidden">
-      <FullBackgroundImage src={rearrangeArray[activeIndex].url} />
-      <OutlineTitle text={rearrangeArray[activeIndex].text} />
       <AutoCarousel data={rearrangeArray} activeIndex={activeIndex} setIndex={setIndex} />;
     </div>
   );

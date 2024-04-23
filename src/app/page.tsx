@@ -7,8 +7,6 @@ import { FullBackgroundImage } from "@/components/FullBackgroundImage";
 import { AutoCarousel } from "@/components/AutoCarousel";
 
 export default function Home() {
-  const [activeIndex, setIndex] = useState(1);
-
   const rearrangeArray = useMemo(() => {
     const [first, ...rest] = sampleData;
 
@@ -19,7 +17,7 @@ export default function Home() {
 
   return (
     <div className="relative w-screen h-screen overflow-hidden">
-      <AutoCarousel data={rearrangeArray} activeIndex={activeIndex} setIndex={setIndex} />;
+      <AutoCarousel data={rearrangeArray} />;
     </div>
   );
 }

@@ -80,7 +80,6 @@ function calcTransforms({
 }
 export function AutoCarousel({ interval = 2000, animationDuration = 1.5, data }: Props) {
   const [isAnimating, setIsAnimating] = useState(false);
-
   const [activeIndex, setActiveIndex] = useState(0);
 
   const { width, height } = useWindowSize();

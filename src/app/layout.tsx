@@ -3,6 +3,8 @@ import localFont from "next/font/local";
 import "./globals.css";
 import "../stylesheets/root.scss";
 import Header from "@/components/Header";
+import { CustomCursor } from "@/components/CustomCursor";
+import { CursorManager } from "@/components/CustomCursor/CursorManager";
 
 const tungsten = localFont({
   src: [
@@ -50,9 +52,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${tungsten.variable} ${helvetica.variable}`}>
-        <Header />
+        <CursorManager>
+          <CustomCursor />
+          <Header />
 
-        {children}
+          {children}
+        </CursorManager>
       </body>
     </html>
   );

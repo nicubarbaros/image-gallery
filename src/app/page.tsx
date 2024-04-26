@@ -1,7 +1,7 @@
 "use client";
 import { sampleData } from "@/sampleData";
 import { useMemo } from "react";
-import { AutoCarousel } from "@/components/AutoCarousel";
+import { Slider } from "@/components/Slider";
 
 export default function Home() {
   const rearrangeArray = useMemo(() => {
@@ -14,7 +14,7 @@ export default function Home() {
 
   return (
     <div className="relative w-screen h-screen overflow-hidden">
-      <AutoCarousel data={rearrangeArray} />;
+      <Slider data={rearrangeArray} />;
     </div>
   );
 }

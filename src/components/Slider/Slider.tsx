@@ -1,6 +1,6 @@
 "use client";
 import { Fragment, useEffect, useMemo, useState } from "react";
-import { Variants, motion } from "framer-motion";
+import { AnimatePresence, Variants, motion } from "framer-motion";
 import Image from "next/image";
 import { SampleDataType } from "@/sampleData";
 import useWindowSize from "@/hooks/useWindowSize";
@@ -126,24 +126,25 @@ function calcTransforms({
     },
   ];
 }
-export function AutoCarousel({ interval = 2000, animationDuration = 1.5, data }: Props) {
-  const [isAnimating, setIsAnimating] = useState(false);
+
+export function Slider({ interval = 2000, animationDuration = 1.5, data }: Props) {
+  const [isAnimating, setIsAnimating] = useState(true);
   const [activeIndex, setActiveIndex] = useState(0);
 
   const { width, height } = useWindowSize();
-  // useEffect(() => {
-  //   const cycleImages = () => {
-  //     if (isAnimating) {
-  //       return;
-  //     }
-  //     setIsAnimating(true);
-  //     setActiveIndex((activeIndex + 1) % data.length);
-  //   };
+  useEffect(() => {
+    const cycleImages = () => {
+      if (isAnimating) {
+        return;
+      }
+      setIsAnimating(true);
+      setActiveIndex((activeIndex + 1) % data.length);
+    };
 
-  //   const intervalId = setInterval(cycleImages, interval);
+    const intervalId = setInterval(cycleImages, interval);
 
-  //   return () => clearInterval(intervalId);
-  // }, [isAnimating, interval, activeIndex]);
+    return () => clearInterval(intervalId);
+  }, [isAnimating, interval, activeIndex, data.length]);
 
   // const handleNext = () => {
   //   if (isAnimating) return;
@@ -202,7 +203,6 @@ export function AutoCarousel({ interval = 2000, animationDuration = 1.5, data }:
   // };
   return (
     <div className="carousel-container relative w-full h-full flex justify-center items-center bg-black">
-      {/* <AnimatePresence initial={false}> */}
       {data.map(({ url, text, author, client, date, slug }, index) => {
         const activeData = transforms[(index + activeIndex) % data.length];
         return (
@@ -233,13 +233,13 @@ export function AutoCarousel({ interval = 2000, animationDuration = 1.5, data }:
               // onHoverStart={handleHoverStart}
               // onHoverEnd={handleHoverEnd}
             >
-              <SlideOutlineTitle text={text} visible={!!activeData.active} />
+              <SlideOutlineTitle text={text} visible={!!activeData.active && !isAnimating} />
               <motion.div
                 className="relative w-full h-full overflow-hidden"
                 // animate={scaleDownControls}
                 variants={scaleVariants}
               >
-                <SlideFullTitle text={text} visible={!!activeData.active} />
+                <SlideFullTitle text={text} visible={!!activeData.active && !isAnimating} />
                 {/* <motion.div
                   // animate={scaleUpControls}
                   variants={scaleVariants}
@@ -252,14 +252,10 @@ export function AutoCarousel({ interval = 2000, animationDuration = 1.5, data }:
               </motion.div>
             </motion.div>
 
-            {activeData.active && <SlideInfo slug={slug} author={author} client={client} date={date} />}
+            {activeData.active && !isAnimating && <SlideInfo slug={slug} author={author} client={client} date={date} />}
           </Fragment>
         );
       })}
-      {/* </AnimatePresence> */}
-      {/* <button className="absolute top-1/2 right-5 bg-gray-700 text-white p-2 rounded" onClick={handleNext}>
-        Next
-      </button> */}
     </div>
   );
 }

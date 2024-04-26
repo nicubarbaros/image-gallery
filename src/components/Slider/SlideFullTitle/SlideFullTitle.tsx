@@ -1,16 +1,12 @@
-import React, { useEffect } from "react";
-import { Variants, motion, useAnimationControls } from "framer-motion";
+import { useEffect } from "react";
+import { motion, useAnimationControls } from "framer-motion";
 
 import "./style.scss";
+import { opacityVariants, transitionCubic } from "@/globals";
 
 type Props = {
   text: string;
   visible: boolean;
-};
-
-const variants: Variants = {
-  hidden: { opacity: 0, transition: { duration: 0.5, ease: [0.77, 0, 0.175, 1] } },
-  visible: { opacity: 1, transition: { duration: 0.5, ease: [0.77, 0, 0.175, 1], delay: 1 } },
 };
 
 export function SlideFullTitle({ text, visible }: Props) {
@@ -31,7 +27,8 @@ export function SlideFullTitle({ text, visible }: Props) {
         initial="hidden"
         animate={controls}
         exit="hidden"
-        variants={variants}
+        variants={opacityVariants}
+        transition={transitionCubic}
         className="font-tungsten font-semibold text-white text-[220px] uppercase"
       >
         {text}

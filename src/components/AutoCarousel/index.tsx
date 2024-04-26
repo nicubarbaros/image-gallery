@@ -1,1 +1,0 @@
-export { AutoCarousel } from "./AutoCarousel";

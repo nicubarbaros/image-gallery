@@ -1,28 +1,11 @@
 import Image from "next/image";
-import React, { useEffect } from "react";
-import { Variants, motion, useAnimationControls } from "framer-motion";
+import { useEffect } from "react";
+import { motion, useAnimationControls } from "framer-motion";
+import { opacityVariants, transitionDefault } from "@/globals";
 
 type Props = {
   src: string;
   visible: boolean;
-};
-
-const variants: Variants = {
-  hidden: {
-    opacity: 0,
-    transition: {
-      duration: 0.5,
-      ease: "easeInOut",
-      delay: 1,
-    },
-  },
-  visible: {
-    opacity: 1,
-    transition: {
-      duration: 0.5,
-      ease: "easeInOut",
-    },
-  },
 };
 
 export function SlideBackgroundImage({ src, visible }: Props) {
@@ -38,13 +21,7 @@ export function SlideBackgroundImage({ src, visible }: Props) {
   }, [visible]);
 
   return (
-    <motion.div
-      key={src}
-      initial="hidden"
-      animate={controls}
-      variants={variants}
-      transition={{ duration: 0.5, ease: "easeInOut" }}
-    >
+    <motion.div key={src} initial="hidden" animate={controls} variants={opacityVariants} transition={transitionDefault}>
       <Image
         src={src}
         fill

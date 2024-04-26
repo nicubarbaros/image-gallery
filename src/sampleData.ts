@@ -18,7 +18,7 @@ export const sampleData: SampleDataType = [
     date: new Date("2019-06-19"),
   },
   {
-    slug: "The wilder nights",
+    slug: "the-wilder-nights",
     url: "/assets/images/image02.jpg",
     text: "The wilder nights",
     author: "Johanna Nobel",

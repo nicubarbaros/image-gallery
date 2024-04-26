@@ -22,7 +22,7 @@ export function SlideOutlineTitle({ text, visible }: Props) {
   }, [visible]);
 
   return (
-    <motion.div className="outline-title absolute left-2/4 top-2/4 translate-x-[-50%] translate-y-[-50%]">
+    <motion.div className="outline-title absolute left-2/4 top-2/4 translate-x-[-50%] translate-y-[-50%] pointer-events-none">
       <motion.h1
         initial="hidden"
         animate={controls}

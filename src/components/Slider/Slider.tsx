@@ -1,131 +1,27 @@
 "use client";
 import { Fragment, useEffect, useMemo, useState } from "react";
-import { AnimatePresence, Variants, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import Image from "next/image";
 import { SampleDataType } from "@/sampleData";
 import useWindowSize from "@/hooks/useWindowSize";
-import "./style.scss";
 import { SlideOutlineTitle } from "./SlideOutlineTitle";
 import { SlideFullTitle } from "./SlideFullTitle";
 import { SlideBackgroundImage } from "./SlideBackgroundImage";
-import { format } from "date-fns";
-import Link from "next/link";
 import { SlideInfo } from "./SlideInfo";
+import { SliderConfig } from "./config";
 
-const ASPECT_RATIO = 3 / 4;
-const MAX_IMAGE_WIDTH = 248;
-const MIN_IMAGE_WIDTH = 248;
-
-const MAX_ACTIVE_IMAGE_WIDTH = 512;
-
-const MIN_ACTIVE_IMAGE_WIDTH = 248;
+import "./style.scss";
 
 type Props = {
   interval?: number;
   animationDuration?: number;
   data: SampleDataType;
 };
+const MAX_IMAGE_WIDTH = 248;
+const MIN_IMAGE_WIDTH = 248;
 
-const scaleVariants: Variants = {
-  scaleUp: { scale: 1.1, transition: { duration: 0.5, ease: [0.77, 0, 0.175, 1] } },
-  scaleDown: { scale: 0.9, transition: { duration: 0.5, ease: [0.77, 0, 0.175, 1], delay: 1 } },
-  reset: { scale: 1 },
-};
-
-function calcTransforms({
-  windowHeight,
-  windowWidth,
-  imageHeight,
-  imageWidth,
-  activeImageHeight,
-  activeImageWidth,
-}: {
-  windowWidth: number;
-  windowHeight: number;
-  imageWidth: number;
-  imageHeight: number;
-  activeImageWidth: number;
-  activeImageHeight: number;
-}) {
-  if (windowWidth < 768) {
-    return [
-      {
-        x: windowWidth,
-        y: 0,
-        opacity: 0,
-        width: imageWidth,
-        height: imageHeight,
-      },
-      {
-        x: windowWidth / 2,
-        y: 0,
-        width: imageWidth,
-        height: imageHeight,
-      },
-      {
-        x: 0,
-        y: 0,
-        active: true,
-        width: activeImageWidth,
-        height: activeImageHeight,
-      },
-      {
-        x: -1 * (windowWidth / 2),
-
-        y: 0,
-        width: imageWidth,
-        height: imageHeight,
-      },
-      {
-        x: -1 * windowWidth,
-        y: 0,
-        opacity: 0,
-
-        width: imageWidth,
-        height: imageHeight,
-      },
-    ];
-  }
-  return [
-    {
-      x: windowWidth / 2 + imageWidth,
-      y: -1 * (windowHeight / 2 + imageHeight),
-      opacity: 0,
-      width: imageWidth,
-      height: imageHeight,
-    },
-    {
-      x: windowWidth / 2 - imageWidth / 2,
-      y: -1 * (windowHeight / 2 - imageHeight / 2),
-
-      width: imageWidth,
-      height: imageHeight,
-    },
-    {
-      x: 0,
-      y: 0,
-      active: true,
-
-      width: activeImageWidth,
-      height: activeImageHeight,
-    },
-    {
-      x: -1 * (windowWidth / 2 - imageWidth / 2),
-      y: windowHeight / 2 - imageHeight / 2,
-
-      width: imageWidth,
-      height: imageHeight,
-    },
-    {
-      x: -1 * (windowWidth / 2 + imageWidth),
-      y: windowHeight / 2 + imageHeight,
-      opacity: 0,
-
-      width: imageWidth,
-      height: imageHeight,
-    },
-  ];
-}
+const MAX_ACTIVE_IMAGE_WIDTH = 512;
+const MIN_ACTIVE_IMAGE_WIDTH = 248;
 
 export function Slider({ interval = 2000, animationDuration = 1.5, data }: Props) {
   const [isAnimating, setIsAnimating] = useState(true);
@@ -161,25 +57,30 @@ export function Slider({ interval = 2000, animationDuration = 1.5, data }: Props
   // };
 
   const normalizedWidth = useMemo(
-    () => Math.ceil(Math.max(Math.min(MAX_IMAGE_WIDTH, width * 0.5), MIN_IMAGE_WIDTH)),
+    () => SliderConfig.clampWidth({ windowWidth: width, maxWidth: MAX_IMAGE_WIDTH, minWidth: MIN_IMAGE_WIDTH }),
     [width]
   );
 
-  const normalizedHeight = useMemo(() => Math.ceil(normalizedWidth / ASPECT_RATIO), [normalizedWidth]);
+  const normalizedHeight = useMemo(() => SliderConfig.aspectRatio(normalizedWidth), [normalizedWidth]);
 
   const normalizedActiveWidth = useMemo(
-    () => Math.ceil(Math.max(Math.min(MAX_ACTIVE_IMAGE_WIDTH, width * 0.5), MIN_ACTIVE_IMAGE_WIDTH)),
+    () =>
+      SliderConfig.clampWidth({
+        windowWidth: width,
+        maxWidth: MAX_ACTIVE_IMAGE_WIDTH,
+        minWidth: MIN_ACTIVE_IMAGE_WIDTH,
+      }),
     [width]
   );
   const normalizedActiveHeight = useMemo(
-    () => Math.ceil(normalizedActiveWidth / ASPECT_RATIO),
+    () => SliderConfig.aspectRatio(normalizedActiveWidth),
     [normalizedActiveWidth]
   );
 
   // TODO: generate it based on sampleData size
   const transforms = useMemo(
     () =>
-      calcTransforms({
+      SliderConfig.calcTransforms({
         windowWidth: width,
         windowHeight: height,
         imageWidth: normalizedWidth,
@@ -190,17 +91,6 @@ export function Slider({ interval = 2000, animationDuration = 1.5, data }: Props
     [width, height, normalizedActiveHeight, normalizedActiveWidth, normalizedHeight, normalizedWidth]
   );
 
-  // const scaleUpControls = useAnimationControls();
-  // const scaleDownControls = useAnimationControls();
-
-  // const handleHoverStart = () => {
-  //   scaleUpControls.start("scaleUp");
-  //   scaleDownControls.start("scaleDown");
-  // };
-  // const handleHoverEnd = () => {
-  //   scaleUpControls.start("reset");
-  //   scaleDownControls.start("reset");
-  // };
   return (
     <div className="carousel-container relative w-full h-full flex justify-center items-center bg-black">
       {data.map(({ url, text, author, client, date, slug }, index) => {
@@ -226,29 +116,24 @@ export function Slider({ interval = 2000, animationDuration = 1.5, data }: Props
                 filter: "grayscale(0)",
               }}
               transition={{ duration: animationDuration, ease: [0.77, 0, 0.175, 1] }}
-              className={`absolute p-2`}
+              className={`absolute p-2 cursor-pointer`}
               onAnimationComplete={() => {
                 setIsAnimating(false);
               }}
-              // onHoverStart={handleHoverStart}
-              // onHoverEnd={handleHoverEnd}
+              whileHover={{
+                scale: 0.9,
+              }}
             >
               <SlideOutlineTitle text={text} visible={!!activeData.active && !isAnimating} />
-              <motion.div
-                className="relative w-full h-full overflow-hidden"
-                // animate={scaleDownControls}
-                variants={scaleVariants}
-              >
+              <motion.div className="relative w-full h-full overflow-hidden">
                 <SlideFullTitle text={text} visible={!!activeData.active && !isAnimating} />
-                {/* <motion.div
-                  // animate={scaleUpControls}
-                  variants={scaleVariants}
-                  // whileHover={{ scale: 1.5 }}
+                <motion.div
+                  whileHover={{ scale: 1.5 }}
                   className="relative w-full h-full"
-                  // transition={{ duration: 0.5, ease: [0.77, 0, 0.175, 1] }}
-                > */}
-                <Image src={url} alt={`Image`} fill className="border rounded border-black" />
-                {/* </motion.div> */}
+                  transition={{ duration: animationDuration, ease: [0.77, 0, 0.175, 1] }}
+                >
+                  <Image src={url} alt={`Image`} fill className="border rounded border-black" />
+                </motion.div>
               </motion.div>
             </motion.div>
 

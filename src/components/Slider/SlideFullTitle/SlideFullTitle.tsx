@@ -22,7 +22,7 @@ export function SlideFullTitle({ text, visible }: Props) {
   }, [visible]);
 
   return (
-    <motion.div className="full-title absolute left-2/4 top-2/4 translate-x-[-50%] translate-y-[-50%] z-10">
+    <motion.div className="full-title absolute left-2/4 top-2/4 translate-x-[-50%] translate-y-[-50%] z-10 pointer-events-none">
       <motion.h1
         initial="hidden"
         animate={controls}

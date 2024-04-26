@@ -1,9 +1,6 @@
 "use client";
 import { sampleData } from "@/sampleData";
-import { useMemo, useState } from "react";
-import Image from "next/image";
-import { OutlineTitle } from "@/components/OutlineTitle";
-import { FullBackgroundImage } from "@/components/FullBackgroundImage";
+import { useMemo } from "react";
 import { AutoCarousel } from "@/components/AutoCarousel";
 
 export default function Home() {

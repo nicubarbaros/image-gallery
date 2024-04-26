@@ -1,13 +1,13 @@
 "use client";
 import { Fragment, useEffect, useMemo, useState } from "react";
-import { motion } from "framer-motion";
+import { Variants, motion } from "framer-motion";
 import Image from "next/image";
 import { SampleDataType } from "@/sampleData";
 import useWindowSize from "@/hooks/useWindowSize";
 import "./style.scss";
-import { OutlineTitle } from "../OutlineTitle";
-import { FullTitle } from "../FullTitle";
-import { FullBackgroundImage } from "../FullBackgroundImage";
+import { OutlineTitle } from "./OutlineTitle";
+import { FullTitle } from "./FullTitle";
+import { FullBackgroundImage } from "./FullBackgroundImage";
 
 const ASPECT_RATIO = 3 / 4;
 const MAX_IMAGE_WIDTH = 248;
@@ -21,6 +21,12 @@ type Props = {
   interval?: number;
   animationDuration?: number;
   data: SampleDataType;
+};
+
+const scaleVariants: Variants = {
+  scaleUp: { scale: 1.1, transition: { duration: 0.5, ease: [0.77, 0, 0.175, 1] } },
+  scaleDown: { scale: 0.9, transition: { duration: 0.5, ease: [0.77, 0, 0.175, 1], delay: 1 } },
+  reset: { scale: 1 },
 };
 
 function calcTransforms({
@@ -38,6 +44,45 @@ function calcTransforms({
   activeImageWidth: number;
   activeImageHeight: number;
 }) {
+  if (windowWidth < 768) {
+    return [
+      {
+        x: windowWidth,
+        y: 0,
+        opacity: 0,
+        width: imageWidth,
+        height: imageHeight,
+      },
+      {
+        x: windowWidth / 2,
+        y: 0,
+        width: imageWidth,
+        height: imageHeight,
+      },
+      {
+        x: 0,
+        y: 0,
+        active: true,
+        width: activeImageWidth,
+        height: activeImageHeight,
+      },
+      {
+        x: -1 * (windowWidth / 2),
+
+        y: 0,
+        width: imageWidth,
+        height: imageHeight,
+      },
+      {
+        x: -1 * windowWidth,
+        y: 0,
+        opacity: 0,
+
+        width: imageWidth,
+        height: imageHeight,
+      },
+    ];
+  }
   return [
     {
       x: windowWidth / 2 + imageWidth,
@@ -141,6 +186,17 @@ export function AutoCarousel({ interval = 2000, animationDuration = 1.5, data }:
     [width, height, normalizedActiveHeight, normalizedActiveWidth, normalizedHeight, normalizedWidth]
   );
 
+  // const scaleUpControls = useAnimationControls();
+  // const scaleDownControls = useAnimationControls();
+
+  // const handleHoverStart = () => {
+  //   scaleUpControls.start("scaleUp");
+  //   scaleDownControls.start("scaleDown");
+  // };
+  // const handleHoverEnd = () => {
+  //   scaleUpControls.start("reset");
+  //   scaleDownControls.start("reset");
+  // };
   return (
     <div className="carousel-container relative w-full h-full flex justify-center items-center bg-black">
       {/* <AnimatePresence initial={false}> */}
@@ -155,6 +211,8 @@ export function AutoCarousel({ interval = 2000, animationDuration = 1.5, data }:
                 y: 0,
                 width: activeData.width,
                 height: activeData.height,
+                filter: "grayscale(0.5)",
+                zIndex: 10 * (index + 1),
               }}
               animate={{
                 x: activeData.x,
@@ -162,18 +220,33 @@ export function AutoCarousel({ interval = 2000, animationDuration = 1.5, data }:
                 opacity: activeData.opacity ?? 1,
                 width: activeData.width,
                 height: activeData.height,
+                filter: "grayscale(0)",
               }}
               transition={{ duration: animationDuration, ease: [0.77, 0, 0.175, 1] }}
-              className={`absolute p-2 z-10`}
+              className={`absolute p-2`}
               onAnimationComplete={() => {
                 setIsAnimating(false);
               }}
+              // onHoverStart={handleHoverStart}
+              // onHoverEnd={handleHoverEnd}
             >
               <OutlineTitle text={text} visible={!!activeData.active} />
-              <div className="relative w-full h-full overflow-hidden">
+              <motion.div
+                className="relative w-full h-full overflow-hidden"
+                // animate={scaleDownControls}
+                variants={scaleVariants}
+              >
                 <FullTitle text={text} visible={!!activeData.active} />
+                {/* <motion.div
+                  // animate={scaleUpControls}
+                  variants={scaleVariants}
+                  // whileHover={{ scale: 1.5 }}
+                  className="relative w-full h-full"
+                  // transition={{ duration: 0.5, ease: [0.77, 0, 0.175, 1] }}
+                > */}
                 <Image src={url} alt={`Image`} fill className="border rounded border-black" />
-              </div>
+                {/* </motion.div> */}
+              </motion.div>
             </motion.div>
           </Fragment>
         );

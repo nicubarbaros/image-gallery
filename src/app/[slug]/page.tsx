@@ -1,26 +1,13 @@
 "use client";
 import { sampleData } from "@/sampleData";
-import { useMemo, useState } from "react";
 import Image from "next/image";
-import { OutlineTitle } from "@/components/OutlineTitle";
-import { FullBackgroundImage } from "@/components/FullBackgroundImage";
-import { AutoCarousel } from "@/components/AutoCarousel";
 import { format } from "date-fns";
 import { Variants, motion } from "framer-motion";
-
-import { useRouter } from "next/router";
 
 const variants: Variants = {
   hidden: { opacity: 0, transition: { duration: 0.5, ease: [0.77, 0, 0.175, 1] } },
   visible: { opacity: 1, transition: { duration: 0.5, ease: [0.77, 0, 0.175, 1] } },
 };
-
-// // Return a list of `params` to populate the [slug] dynamic segment
-// export async function generateStaticParams() {
-//   return sampleData.map((post) => ({
-//     slug: post.slug,
-//   }));
-// }
 
 function getPageData(slug: string) {
   return sampleData.find((sample) => sample.slug === slug);

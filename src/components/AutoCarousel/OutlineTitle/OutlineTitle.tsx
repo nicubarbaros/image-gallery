@@ -32,7 +32,7 @@ export function OutlineTitle({ text, visible }: Props) {
         animate={controls}
         exit="hidden"
         variants={variants}
-        className="outline-title-stroke font-tungsten font-semibold text-[220px] uppercase"
+        className="outline-title-stroke font-tungsten font-semibold uppercase"
       >
         {text}
       </motion.h1>

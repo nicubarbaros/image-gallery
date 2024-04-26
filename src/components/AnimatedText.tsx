@@ -21,6 +21,7 @@ const variants: Variants = {
 
 export function AnimatedText({ children, delay }: Props) {
   const delayInSeconds = delay ? delay / 1000 : 0;
+
   return (
     <div className="overflow-hidden">
       <motion.div

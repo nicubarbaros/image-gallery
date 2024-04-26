@@ -29,7 +29,7 @@ export function SlideFullTitle({ text, visible }: Props) {
         exit="hidden"
         variants={opacityVariants}
         transition={transitionCubic}
-        className="font-tungsten font-semibold text-white text-[220px] uppercase"
+        className="font-tungsten font-semibold text-white text-[220px] uppercase tracking-[8px]"
       >
         {text}
       </motion.h1>

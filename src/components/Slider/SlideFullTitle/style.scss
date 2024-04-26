@@ -1,8 +1,8 @@
 .full-title {
   h1 {
-    width: clamp(300px, 50vw, 800px);
+    width: clamp(300px, 50vw, 1000px);
     line-height: 0.8;
     text-align: center;
-    font-size: calc(7px + 15vw);
+    font-size: clamp(60px, 15vw, 220px);
   }
 }

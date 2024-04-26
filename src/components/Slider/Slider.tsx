@@ -11,6 +11,7 @@ import { SlideInfo } from "./SlideInfo";
 import { SliderConfig } from "./config";
 
 import "./style.scss";
+import { SliderLegend } from "./SliderLegend";
 
 type Props = {
   interval?: number;
@@ -116,7 +117,7 @@ export function Slider({ interval = 2000, animationDuration = 1.5, data }: Props
                 filter: "grayscale(0)",
               }}
               transition={{ duration: animationDuration, ease: [0.77, 0, 0.175, 1] }}
-              className={`absolute p-2 cursor-pointer`}
+              className="absolute"
               onAnimationComplete={() => {
                 setIsAnimating(false);
               }}
@@ -132,9 +133,15 @@ export function Slider({ interval = 2000, animationDuration = 1.5, data }: Props
                   className="relative w-full h-full"
                   transition={{ duration: animationDuration, ease: [0.77, 0, 0.175, 1] }}
                 >
-                  <Image src={url} alt={`Image`} fill className="border rounded border-black" />
+                  <Image src={url} alt={`Image`} fill className="border rounded-[10px] border-black" />
                 </motion.div>
               </motion.div>
+
+              {activeData.active && !isAnimating && (
+                <div className="absolute left-[50%] translate-x-[-50%] bottom-[10%]">
+                  <SliderLegend counter={data.length} current={activeIndex} />
+                </div>
+              )}
             </motion.div>
 
             {activeData.active && !isAnimating && <SlideInfo slug={slug} author={author} client={client} date={date} />}

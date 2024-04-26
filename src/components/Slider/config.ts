@@ -1,5 +1,8 @@
 const ASPECT_RATIO = 3 / 4;
 
+const BORDER_PADDING = 16;
+
+const TABLET_SIZE = 768;
 export const SliderConfig = {
   calcTransforms({
     windowHeight,
@@ -26,7 +29,7 @@ export const SliderConfig = {
           height: imageHeight,
         },
         {
-          x: windowWidth / 2,
+          x: windowWidth / 2 + imageWidth * 0.4,
           y: 0,
           width: imageWidth,
           height: imageHeight,
@@ -39,7 +42,7 @@ export const SliderConfig = {
           height: activeImageHeight,
         },
         {
-          x: -1 * (windowWidth / 2),
+          x: -1 * (windowWidth / 2 + imageWidth * 0.4),
 
           y: 0,
           width: imageWidth,
@@ -64,8 +67,8 @@ export const SliderConfig = {
         height: imageHeight,
       },
       {
-        x: windowWidth / 2 - imageWidth / 2,
-        y: -1 * (windowHeight / 2 - imageHeight / 2),
+        x: windowWidth / 2 - imageWidth / 2 - BORDER_PADDING,
+        y: -1 * (windowHeight / 2 - imageHeight / 2) + BORDER_PADDING,
 
         width: imageWidth,
         height: imageHeight,
@@ -79,8 +82,8 @@ export const SliderConfig = {
         height: activeImageHeight,
       },
       {
-        x: -1 * (windowWidth / 2 - imageWidth / 2),
-        y: windowHeight / 2 - imageHeight / 2,
+        x: -1 * (windowWidth / 2 - imageWidth / 2) + BORDER_PADDING,
+        y: windowHeight / 2 - imageHeight / 2 - BORDER_PADDING,
 
         width: imageWidth,
         height: imageHeight,
@@ -96,7 +99,8 @@ export const SliderConfig = {
     ];
   },
   clampWidth({ windowWidth, maxWidth, minWidth }: { windowWidth: number; minWidth: number; maxWidth: number }) {
-    return Math.ceil(Math.max(Math.min(maxWidth, windowWidth * 0.5), minWidth));
+    const ratio = windowWidth < TABLET_SIZE ? 0.5 : 0.5;
+    return Math.ceil(Math.max(Math.min(maxWidth, windowWidth * ratio), minWidth));
   },
   aspectRatio(width: number) {
     return Math.ceil(width / ASPECT_RATIO);

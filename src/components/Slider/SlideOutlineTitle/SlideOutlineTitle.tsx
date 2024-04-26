@@ -29,7 +29,7 @@ export function SlideOutlineTitle({ text, visible }: Props) {
         exit="hidden"
         variants={opacityVariants}
         transition={transitionCubic}
-        className="outline-title-stroke font-tungsten font-semibold uppercase"
+        className="outline-title-stroke font-tungsten font-semibold uppercase tracking-[8px]"
       >
         {text}
       </motion.h1>

@@ -11,21 +11,23 @@ import { SlideInfo } from "./SlideInfo";
 import { SliderConfig } from "./config";
 import { SliderLegend } from "./SliderLegend";
 import { CursorContext } from "../CustomCursor/CursorManager";
+import { transitionDefault } from "@/globals";
 
 import "./style.scss";
-import { transitionDefault } from "@/globals";
+
 const TABLET_SIZE = 768;
+
+const MAX_IMAGE_WIDTH = 248;
+const MIN_IMAGE_WIDTH = 248;
+
+const MAX_ACTIVE_IMAGE_WIDTH = 512;
+const MIN_ACTIVE_IMAGE_WIDTH = 248;
 
 type Props = {
   interval?: number;
   animationDuration?: number;
   data: SampleDataType;
 };
-const MAX_IMAGE_WIDTH = 248;
-const MIN_IMAGE_WIDTH = 248;
-
-const MAX_ACTIVE_IMAGE_WIDTH = 512;
-const MIN_ACTIVE_IMAGE_WIDTH = 248;
 
 export function Slider({ interval = 2000, animationDuration = 1.5, data }: Props) {
   const [isAnimating, setIsAnimating] = useState(true);
@@ -54,41 +56,31 @@ export function Slider({ interval = 2000, animationDuration = 1.5, data }: Props
     setCurrentIndex(activeIndex);
   }, [activeIndex, setCurrentIndex]);
 
+  const changeSlide = useCallback(
+    (change: number) => {
+      if (isAnimating) return;
+
+      setIsAnimating(true);
+      setActiveIndex((activeIndex + change + slidesLength) % slidesLength);
+
+      setTimeout(() => {
+        setIsAnimating(false);
+      }, interval);
+    },
+    [isAnimating, activeIndex, slidesLength, interval]
+  );
+
   const handleNext = useCallback(() => {
-    if (isAnimating) return;
-    setIsAnimating(true);
-    setActiveIndex((activeIndex + 1) % slidesLength);
+    changeSlide(1);
+  }, [changeSlide]);
 
-    setTimeout(() => {
-      setIsAnimating(false);
-    }, interval);
-  }, [isAnimating, activeIndex, slidesLength, interval]);
-
-  const handlePrev = () => {
-    if (isAnimating) return;
-
-    setIsAnimating(true);
-    setActiveIndex((activeIndex - 1 + slidesLength) % slidesLength);
-
-    setTimeout(() => {
-      setIsAnimating(false);
-    }, interval);
-  };
+  const handlePrev = useCallback(() => {
+    changeSlide(-1);
+  }, [changeSlide]);
 
   // Enable auto-scroll on mobile on mobile
   useEffect(() => {
     if (!isTablet) return;
-
-    const cycleImages = () => {
-      if (isAnimating) {
-        return;
-      }
-      setIsAnimating(true);
-      setTimeout(() => {
-        setIsAnimating(false);
-      }, interval);
-      setActiveIndex((activeIndex + 1) % slidesLength);
-    };
 
     const intervalId = setInterval(handleNext, interval);
 

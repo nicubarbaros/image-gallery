@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import "../stylesheets/root.scss";
+import Header from "@/components/Header";
 
 const tungsten = localFont({
   src: [
@@ -48,7 +49,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${tungsten.variable} ${helvetica.variable}`}>{children}</body>
+      <body className={`${tungsten.variable} ${helvetica.variable}`}>
+        <Header />
+
+        {children}
+      </body>
     </html>
   );
 }

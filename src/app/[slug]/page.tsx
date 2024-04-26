@@ -15,7 +15,7 @@ export default function Page({ params }: { params: { slug: string } }) {
   if (!data) return null;
 
   return (
-    <div className="relative w-screen h-screen grid grid-cols-[auto_60%_1fr] gap-9">
+    <div className="relative w-screen h-screen grid grid-cols-[auto_60%_1fr] gap-9 text-black">
       <div className="col-start-2 col-span-1 flex flex-col justify-end py-9">
         <AnimatedText>
           <h1 className="font-tungsten font-semibold uppercase text-[180px] text-balance leading-none">{data.text}</h1>

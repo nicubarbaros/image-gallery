@@ -33,20 +33,21 @@ export const SliderConfig = {
           y: 0,
           width: imageWidth,
           height: imageHeight,
+          next: true,
         },
         {
           x: 0,
           y: 0,
-          active: true,
+          current: true,
           width: activeImageWidth,
           height: activeImageHeight,
         },
         {
           x: -1 * (windowWidth / 2 + imageWidth * 0.4),
-
           y: 0,
           width: imageWidth,
           height: imageHeight,
+          previous: true,
         },
         {
           x: -1 * windowWidth,
@@ -69,15 +70,14 @@ export const SliderConfig = {
       {
         x: windowWidth / 2 - imageWidth / 2 - BORDER_PADDING,
         y: -1 * (windowHeight / 2 - imageHeight / 2) + BORDER_PADDING,
-
+        next: true,
         width: imageWidth,
         height: imageHeight,
       },
       {
         x: 0,
         y: 0,
-        active: true,
-
+        current: true,
         width: activeImageWidth,
         height: activeImageHeight,
       },
@@ -87,6 +87,7 @@ export const SliderConfig = {
 
         width: imageWidth,
         height: imageHeight,
+        previous: true,
       },
       {
         x: -1 * (windowWidth / 2 + imageWidth),

@@ -34,13 +34,9 @@ export function SlideInfo({ author, client, date, slug }: Props) {
         animate="visible"
         variants={opacityVariants}
         transition={{ ...transitionDefault, delay: 1 }}
+        className="bg-white text-black hover:bg-black hover:text-white rounded-2xl uppercase px-4 py-2  font-helvetica text-[10px] font-bold text-center transition-all"
       >
-        <Link
-          href={slug}
-          className="bg-white text-black rounded-2xl uppercase px-4 py-2  font-helvetica text-[10px] font-bold text-center"
-        >
-          Have a look
-        </Link>
+        <Link href={slug}>Have a look</Link>
       </motion.div>
     </div>
   );

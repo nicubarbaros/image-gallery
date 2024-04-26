@@ -30,32 +30,47 @@ export function Slider({ interval = 2000, animationDuration = 1.5, data }: Props
 
   const { width, height } = useWindowSize();
   useEffect(() => {
-    const cycleImages = () => {
-      if (isAnimating) {
-        return;
-      }
-      setIsAnimating(true);
-      setActiveIndex((activeIndex + 1) % data.length);
-    };
+    setTimeout(() => {
+      setIsAnimating(false);
+    }, interval);
+  }, []);
 
-    const intervalId = setInterval(cycleImages, interval);
+  // useEffect(() => {
+  //   const cycleImages = () => {
+  //     if (isAnimating) {
+  //       return;
+  //     }
+  //     setIsAnimating(true);
+  //     setActiveIndex((activeIndex + 1) % data.length);
+  //   };
 
-    return () => clearInterval(intervalId);
-  }, [isAnimating, interval, activeIndex, data.length]);
+  //   const intervalId = setInterval(cycleImages, interval);
 
-  // const handleNext = () => {
-  //   if (isAnimating) return;
+  //   return () => clearInterval(intervalId);
+  // }, [isAnimating, interval, activeIndex, data.length]);
 
-  //   setIsAnimating(true);
-  //   setIndex((prev) => (prev + 1) % images.length);
-  // };
+  const handleNext = () => {
+    if (isAnimating) return;
 
-  // const handlePrev = () => {
-  //   if (isAnimating) return;
-  //   console.log("Throttled action");
-  //   setIsAnimating(true);
-  //   setIndex((prev) => (prev - 1 + images.length) % images.length);
-  // };
+    setIsAnimating(true);
+    setActiveIndex((activeIndex + 1) % data.length);
+
+    setTimeout(() => {
+      setIsAnimating(false);
+    }, interval);
+  };
+
+  const handlePrev = () => {
+    if (isAnimating) return;
+
+    setIsAnimating(true);
+
+    setActiveIndex((activeIndex - 1 + data.length) % data.length);
+
+    setTimeout(() => {
+      setIsAnimating(false);
+    }, interval);
+  };
 
   const normalizedWidth = useMemo(
     () => SliderConfig.clampWidth({ windowWidth: width, maxWidth: MAX_IMAGE_WIDTH, minWidth: MIN_IMAGE_WIDTH }),
@@ -92,20 +107,20 @@ export function Slider({ interval = 2000, animationDuration = 1.5, data }: Props
     [width, height, normalizedActiveHeight, normalizedActiveWidth, normalizedHeight, normalizedWidth]
   );
 
+  console.log(activeIndex, isAnimating);
   return (
     <div className="carousel-container relative w-full h-full flex justify-center items-center bg-black">
       {data.map(({ url, text, author, client, date, slug }, index) => {
         const activeData = transforms[(index + activeIndex) % data.length];
         return (
           <Fragment key={url}>
-            <SlideBackgroundImage src={url} visible={!!activeData.active} />
+            <SlideBackgroundImage src={url} visible={!!activeData.current} />
             <motion.div
               initial={{
                 x: 0,
                 y: 0,
                 width: activeData.width,
                 height: activeData.height,
-                filter: "grayscale(0.5)",
                 zIndex: 10 * (index + 1),
               }}
               animate={{
@@ -114,37 +129,47 @@ export function Slider({ interval = 2000, animationDuration = 1.5, data }: Props
                 opacity: activeData.opacity ?? 1,
                 width: activeData.width,
                 height: activeData.height,
-                filter: "grayscale(0)",
               }}
               transition={{ duration: animationDuration, ease: [0.77, 0, 0.175, 1] }}
               className="absolute"
-              onAnimationComplete={() => {
-                setIsAnimating(false);
-              }}
-              whileHover={{
-                scale: 0.9,
+              whileHover={
+                activeData.current
+                  ? {}
+                  : {
+                      scale: 0.9,
+                    }
+              }
+              onClick={() => {
+                if (activeData.previous) {
+                  handlePrev();
+                }
+                if (activeData.next) {
+                  handleNext();
+                }
               }}
             >
-              <SlideOutlineTitle text={text} visible={!!activeData.active && !isAnimating} />
-              <motion.div className="relative w-full h-full overflow-hidden">
-                <SlideFullTitle text={text} visible={!!activeData.active && !isAnimating} />
+              <SlideOutlineTitle text={text} visible={!!activeData.current && !isAnimating} />
+              <motion.div className="relative w-full h-full overflow-hidden border rounded-[10px] border-black">
+                <SlideFullTitle text={text} visible={!!activeData.current && !isAnimating} />
                 <motion.div
-                  whileHover={{ scale: 1.5 }}
+                  whileHover={activeData.current ? {} : { scale: 1.5 }}
                   className="relative w-full h-full"
                   transition={{ duration: animationDuration, ease: [0.77, 0, 0.175, 1] }}
                 >
-                  <Image src={url} alt={`Image`} fill className="border rounded-[10px] border-black" />
+                  <Image src={url} alt={`Image`} fill />
                 </motion.div>
               </motion.div>
 
-              {activeData.active && !isAnimating && (
+              {activeData.current && !isAnimating && (
                 <div className="absolute left-[50%] translate-x-[-50%] bottom-[10%]">
                   <SliderLegend counter={data.length} current={activeIndex} />
                 </div>
               )}
             </motion.div>
 
-            {activeData.active && !isAnimating && <SlideInfo slug={slug} author={author} client={client} date={date} />}
+            {activeData.current && !isAnimating && (
+              <SlideInfo slug={slug} author={author} client={client} date={date} />
+            )}
           </Fragment>
         );
       })}

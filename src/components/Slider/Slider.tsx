@@ -1,5 +1,5 @@
 "use client";
-import { Fragment, useContext, useEffect, useMemo, useState } from "react";
+import { Fragment, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { SampleDataType } from "@/sampleData";
@@ -13,6 +13,8 @@ import { SliderLegend } from "./SliderLegend";
 import { CursorContext } from "../CustomCursor/CursorManager";
 
 import "./style.scss";
+import { transitionDefault } from "@/globals";
+const TABLET_SIZE = 768;
 
 type Props = {
   interval?: number;
@@ -31,49 +33,78 @@ export function Slider({ interval = 2000, animationDuration = 1.5, data }: Props
   const { setTotal, setCurrentIndex } = useContext(CursorContext);
 
   const { width, height } = useWindowSize();
+  const isTablet = width < TABLET_SIZE;
+
+  const slidesLength = data.length;
+
+  // Initial animation
   useEffect(() => {
     setTimeout(() => {
       setIsAnimating(false);
     }, interval);
   }, [interval]);
 
+  // Nr of slides for custom cursor
   useEffect(() => {
-    setTotal(data.length);
-  }, [data.length, setTotal]);
+    setTotal(slidesLength);
+  }, [slidesLength, setTotal]);
 
+  // Current index for custom cursor
   useEffect(() => {
     setCurrentIndex(activeIndex);
   }, [activeIndex, setCurrentIndex]);
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     if (isAnimating) return;
-
     setIsAnimating(true);
-    setActiveIndex((activeIndex + 1) % data.length);
+    setActiveIndex((activeIndex + 1) % slidesLength);
 
     setTimeout(() => {
       setIsAnimating(false);
     }, interval);
-  };
+  }, [isAnimating, activeIndex, slidesLength, interval]);
 
   const handlePrev = () => {
     if (isAnimating) return;
 
     setIsAnimating(true);
-    setActiveIndex((activeIndex - 1 + data.length) % data.length);
+    setActiveIndex((activeIndex - 1 + slidesLength) % slidesLength);
 
     setTimeout(() => {
       setIsAnimating(false);
     }, interval);
   };
 
+  // Enable auto-scroll on mobile on mobile
+  useEffect(() => {
+    if (!isTablet) return;
+
+    const cycleImages = () => {
+      if (isAnimating) {
+        return;
+      }
+      setIsAnimating(true);
+      setTimeout(() => {
+        setIsAnimating(false);
+      }, interval);
+      setActiveIndex((activeIndex + 1) % slidesLength);
+    };
+
+    const intervalId = setInterval(handleNext, interval);
+
+    return () => clearInterval(intervalId);
+  }, [isAnimating, interval, activeIndex, slidesLength, isTablet, handleNext]);
+
+  // Normalized image width based on screen size
   const normalizedWidth = useMemo(
     () => SliderConfig.clampWidth({ windowWidth: width, maxWidth: MAX_IMAGE_WIDTH, minWidth: MIN_IMAGE_WIDTH }),
     [width]
   );
 
+  // Normalized image height based on ratio
   const normalizedHeight = useMemo(() => SliderConfig.aspectRatio(normalizedWidth), [normalizedWidth]);
 
+  // Normalized active image width based on screen size
   const normalizedActiveWidth = useMemo(
     () =>
       SliderConfig.clampWidth({
@@ -83,12 +114,13 @@ export function Slider({ interval = 2000, animationDuration = 1.5, data }: Props
       }),
     [width]
   );
+
+  // Normalized active image height based on ratio
   const normalizedActiveHeight = useMemo(
     () => SliderConfig.aspectRatio(normalizedActiveWidth),
     [normalizedActiveWidth]
   );
 
-  // TODO: generate it based on sampleData size
   const transforms = useMemo(
     () =>
       SliderConfig.calcTransforms({
@@ -98,14 +130,15 @@ export function Slider({ interval = 2000, animationDuration = 1.5, data }: Props
         imageHeight: normalizedHeight,
         activeImageWidth: normalizedActiveWidth,
         activeImageHeight: normalizedActiveHeight,
+        isTablet,
       }),
-    [width, height, normalizedActiveHeight, normalizedActiveWidth, normalizedHeight, normalizedWidth]
+    [width, height, normalizedActiveHeight, normalizedActiveWidth, normalizedHeight, normalizedWidth, isTablet]
   );
 
   return (
     <div className="carousel-container relative w-full h-full flex justify-center items-center bg-black">
       {data.map(({ url, text, author, client, date, slug }, index) => {
-        const activeData = transforms[(index + activeIndex) % data.length];
+        const activeData = transforms[(index + activeIndex) % slidesLength];
         return (
           <Fragment key={url}>
             <SlideBackgroundImage src={url} visible={!!activeData.current} />
@@ -131,6 +164,7 @@ export function Slider({ interval = 2000, animationDuration = 1.5, data }: Props
                   ? {}
                   : {
                       scale: 0.9,
+                      transition: transitionDefault,
                     }
               }
               onClick={() => {
@@ -146,7 +180,7 @@ export function Slider({ interval = 2000, animationDuration = 1.5, data }: Props
               <motion.div className="relative w-full h-full overflow-hidden border rounded-[10px] border-black">
                 <SlideFullTitle text={text} visible={!!activeData.current && !isAnimating} />
                 <motion.div
-                  whileHover={activeData.current ? {} : { scale: 1.5 }}
+                  whileHover={activeData.current ? {} : { scale: 1.2, transition: transitionDefault }}
                   className="relative w-full h-full"
                   transition={{ duration: animationDuration, ease: [0.77, 0, 0.175, 1] }}
                 >
@@ -156,7 +190,7 @@ export function Slider({ interval = 2000, animationDuration = 1.5, data }: Props
 
               {activeData.current && !isAnimating && (
                 <div className="absolute left-[50%] translate-x-[-50%] bottom-[10%]">
-                  <SliderLegend counter={data.length} current={activeIndex} />
+                  <SliderLegend counter={slidesLength} current={activeIndex} />
                 </div>
               )}
             </motion.div>

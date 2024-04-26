@@ -1,3 +1,4 @@
+import { AnimatedText } from "@/components/AnimatedText";
 import { format } from "date-fns";
 import Link from "next/link";
 import React from "react";
@@ -12,10 +13,16 @@ export function SlideInfo({ author, client, date, slug }: Props) {
   return (
     <div className="slide-description flex flex-col gap-4  fixed right-[4vw] bottom-[40px]  w-[109px]  z-10">
       <div>
-        <p className="text-white font-helvetica uppercase size text-[10px]">{author}</p>
-        <p className="text-white font-helvetica uppercase size text-[10px]">for {client}</p>
+        <AnimatedText>
+          <p className="text-white font-helvetica uppercase size text-[10px]">{author}</p>
+        </AnimatedText>
+        <AnimatedText delay={100}>
+          <p className="text-white font-helvetica uppercase size text-[10px]">for {client}</p>
+        </AnimatedText>
       </div>
-      <p className="ml-auto text-white font-helvetica uppercase text-[10px]">{format(date, "MMM y")}</p>
+      <AnimatedText delay={150}>
+        <p className="ml-auto text-white font-helvetica uppercase text-[10px]">{format(date, "MMM y")}</p>
+      </AnimatedText>
 
       <Link
         href={slug}

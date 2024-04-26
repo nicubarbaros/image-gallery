@@ -5,9 +5,12 @@ import Image from "next/image";
 import { SampleDataType } from "@/sampleData";
 import useWindowSize from "@/hooks/useWindowSize";
 import "./style.scss";
-import { OutlineTitle } from "./OutlineTitle";
-import { FullTitle } from "./FullTitle";
-import { FullBackgroundImage } from "./FullBackgroundImage";
+import { SlideOutlineTitle } from "./SlideOutlineTitle";
+import { SlideFullTitle } from "./SlideFullTitle";
+import { SlideBackgroundImage } from "./SlideBackgroundImage";
+import { format } from "date-fns";
+import Link from "next/link";
+import { SlideInfo } from "./SlideInfo";
 
 const ASPECT_RATIO = 3 / 4;
 const MAX_IMAGE_WIDTH = 248;
@@ -128,19 +131,19 @@ export function AutoCarousel({ interval = 2000, animationDuration = 1.5, data }:
   const [activeIndex, setActiveIndex] = useState(0);
 
   const { width, height } = useWindowSize();
-  useEffect(() => {
-    const cycleImages = () => {
-      if (isAnimating) {
-        return;
-      }
-      setIsAnimating(true);
-      setActiveIndex((activeIndex + 1) % data.length);
-    };
+  // useEffect(() => {
+  //   const cycleImages = () => {
+  //     if (isAnimating) {
+  //       return;
+  //     }
+  //     setIsAnimating(true);
+  //     setActiveIndex((activeIndex + 1) % data.length);
+  //   };
 
-    const intervalId = setInterval(cycleImages, interval);
+  //   const intervalId = setInterval(cycleImages, interval);
 
-    return () => clearInterval(intervalId);
-  }, [isAnimating, interval, activeIndex]);
+  //   return () => clearInterval(intervalId);
+  // }, [isAnimating, interval, activeIndex]);
 
   // const handleNext = () => {
   //   if (isAnimating) return;
@@ -200,11 +203,11 @@ export function AutoCarousel({ interval = 2000, animationDuration = 1.5, data }:
   return (
     <div className="carousel-container relative w-full h-full flex justify-center items-center bg-black">
       {/* <AnimatePresence initial={false}> */}
-      {data.map(({ url, text }, index) => {
+      {data.map(({ url, text, author, client, date, slug }, index) => {
         const activeData = transforms[(index + activeIndex) % data.length];
         return (
           <Fragment key={url}>
-            <FullBackgroundImage src={url} visible={!!activeData.active} />
+            <SlideBackgroundImage src={url} visible={!!activeData.active} />
             <motion.div
               initial={{
                 x: 0,
@@ -230,13 +233,13 @@ export function AutoCarousel({ interval = 2000, animationDuration = 1.5, data }:
               // onHoverStart={handleHoverStart}
               // onHoverEnd={handleHoverEnd}
             >
-              <OutlineTitle text={text} visible={!!activeData.active} />
+              <SlideOutlineTitle text={text} visible={!!activeData.active} />
               <motion.div
                 className="relative w-full h-full overflow-hidden"
                 // animate={scaleDownControls}
                 variants={scaleVariants}
               >
-                <FullTitle text={text} visible={!!activeData.active} />
+                <SlideFullTitle text={text} visible={!!activeData.active} />
                 {/* <motion.div
                   // animate={scaleUpControls}
                   variants={scaleVariants}
@@ -248,6 +251,8 @@ export function AutoCarousel({ interval = 2000, animationDuration = 1.5, data }:
                 {/* </motion.div> */}
               </motion.div>
             </motion.div>
+
+            {activeData.active && <SlideInfo slug={slug} author={author} client={client} date={date} />}
           </Fragment>
         );
       })}

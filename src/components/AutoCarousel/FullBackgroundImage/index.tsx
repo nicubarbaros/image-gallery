@@ -1,1 +1,0 @@
-export { FullBackgroundImage } from "./FullBackgroundImage";

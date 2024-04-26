@@ -25,7 +25,7 @@ const variants: Variants = {
   },
 };
 
-export function FullBackgroundImage({ src, visible }: Props) {
+export function SlideBackgroundImage({ src, visible }: Props) {
   const controls = useAnimationControls();
 
   useEffect(() => {

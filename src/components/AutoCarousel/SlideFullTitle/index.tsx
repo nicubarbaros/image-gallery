@@ -1,0 +1,1 @@
+export { SlideFullTitle } from "./SlideFullTitle";

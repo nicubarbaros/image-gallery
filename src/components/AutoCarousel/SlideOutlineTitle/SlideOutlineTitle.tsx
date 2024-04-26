@@ -13,7 +13,7 @@ const variants: Variants = {
   visible: { opacity: 1, transition: { duration: 0.5, ease: [0.77, 0, 0.175, 1], delay: 1 } },
 };
 
-export function OutlineTitle({ text, visible }: Props) {
+export function SlideOutlineTitle({ text, visible }: Props) {
   const controls = useAnimationControls();
 
   useEffect(() => {

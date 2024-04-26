@@ -10,6 +10,10 @@ const config: Config = {
     extend: {
       fontFamily: {
         tungsten: ["var(--font-tungsten)", "sans-serif"],
+        helvetica: ["var(--font-helvetica)"],
+      },
+      colors: {
+        black: "#202020",
       },
     },
   },

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import "./globals.css";
 import "../stylesheets/root.scss";
 
 const tungsten = localFont({
@@ -7,7 +8,7 @@ const tungsten = localFont({
     {
       path: "../../public/assets/fonts/Tungsten-Bold.woff2",
       weight: "700",
-      style: "normal",
+      style: "bold",
     },
     {
       path: "../../public/assets/fonts/Tungsten-Semibold.woff2",
@@ -18,8 +19,21 @@ const tungsten = localFont({
   variable: "--font-tungsten",
 });
 
-import "./globals.css";
-import { AnimatePresence } from "framer-motion";
+const helvetica = localFont({
+  src: [
+    {
+      path: "../../public/assets/fonts/Helvetica-Bold.ttf",
+      weight: "700",
+      style: "bold",
+    },
+    {
+      path: "../../public/assets/fonts/Helvetica.ttf",
+      weight: "600",
+      style: "normal",
+    },
+  ],
+  variable: "--font-helvetica",
+});
 
 export const metadata: Metadata = {
   title: "Lens & Style Collective - Creative Styling and Photography",
@@ -34,7 +48,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${tungsten.variable}`}>{children}</body>
+      <body className={`${tungsten.variable} ${helvetica.variable}`}>{children}</body>
     </html>
   );
 }

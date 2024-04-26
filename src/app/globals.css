@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 body {
+  cursor: none;
 }
 
 @layer utilities {

@@ -1,5 +1,5 @@
 "use client";
-import { Fragment, useEffect, useMemo, useState } from "react";
+import { Fragment, useContext, useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { SampleDataType } from "@/sampleData";
@@ -9,9 +9,10 @@ import { SlideFullTitle } from "./SlideFullTitle";
 import { SlideBackgroundImage } from "./SlideBackgroundImage";
 import { SlideInfo } from "./SlideInfo";
 import { SliderConfig } from "./config";
+import { SliderLegend } from "./SliderLegend";
+import { CursorContext } from "../CustomCursor/CursorManager";
 
 import "./style.scss";
-import { SliderLegend } from "./SliderLegend";
 
 type Props = {
   interval?: number;
@@ -27,27 +28,22 @@ const MIN_ACTIVE_IMAGE_WIDTH = 248;
 export function Slider({ interval = 2000, animationDuration = 1.5, data }: Props) {
   const [isAnimating, setIsAnimating] = useState(true);
   const [activeIndex, setActiveIndex] = useState(0);
+  const { setTotal, setCurrentIndex } = useContext(CursorContext);
 
   const { width, height } = useWindowSize();
   useEffect(() => {
     setTimeout(() => {
       setIsAnimating(false);
     }, interval);
-  }, []);
+  }, [interval]);
 
-  // useEffect(() => {
-  //   const cycleImages = () => {
-  //     if (isAnimating) {
-  //       return;
-  //     }
-  //     setIsAnimating(true);
-  //     setActiveIndex((activeIndex + 1) % data.length);
-  //   };
+  useEffect(() => {
+    setTotal(data.length);
+  }, [data.length, setTotal]);
 
-  //   const intervalId = setInterval(cycleImages, interval);
-
-  //   return () => clearInterval(intervalId);
-  // }, [isAnimating, interval, activeIndex, data.length]);
+  useEffect(() => {
+    setCurrentIndex(activeIndex);
+  }, [activeIndex, setCurrentIndex]);
 
   const handleNext = () => {
     if (isAnimating) return;
@@ -64,7 +60,6 @@ export function Slider({ interval = 2000, animationDuration = 1.5, data }: Props
     if (isAnimating) return;
 
     setIsAnimating(true);
-
     setActiveIndex((activeIndex - 1 + data.length) % data.length);
 
     setTimeout(() => {
@@ -107,7 +102,6 @@ export function Slider({ interval = 2000, animationDuration = 1.5, data }: Props
     [width, height, normalizedActiveHeight, normalizedActiveWidth, normalizedHeight, normalizedWidth]
   );
 
-  console.log(activeIndex, isAnimating);
   return (
     <div className="carousel-container relative w-full h-full flex justify-center items-center bg-black">
       {data.map(({ url, text, author, client, date, slug }, index) => {
@@ -116,6 +110,7 @@ export function Slider({ interval = 2000, animationDuration = 1.5, data }: Props
           <Fragment key={url}>
             <SlideBackgroundImage src={url} visible={!!activeData.current} />
             <motion.div
+              className="absolute"
               initial={{
                 x: 0,
                 y: 0,
@@ -131,7 +126,6 @@ export function Slider({ interval = 2000, animationDuration = 1.5, data }: Props
                 height: activeData.height,
               }}
               transition={{ duration: animationDuration, ease: [0.77, 0, 0.175, 1] }}
-              className="absolute"
               whileHover={
                 activeData.current
                   ? {}

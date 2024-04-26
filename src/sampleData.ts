@@ -18,20 +18,20 @@ export const sampleData: SampleDataType = [
     date: new Date("2019-06-19"),
   },
   {
-    slug: "the-wilder-nights",
-    url: "/assets/images/image02.jpg",
-    text: "The wilder nights",
-    author: "Johanna Nobel",
-    client: "Wild",
-    date: new Date("2019-12-19"),
-  },
-  {
     slug: "smooth-memories",
     url: "/assets/images/image03.jpg",
     text: "Smooth memories",
     author: "Johanna Nobel",
     client: "Chanel",
     date: new Date("2020-02-01"),
+  },
+  {
+    slug: "the-wilder-nights",
+    url: "/assets/images/image02.jpg",
+    text: "The wilder nights",
+    author: "Johanna Nobel",
+    client: "Wild",
+    date: new Date("2019-12-19"),
   },
   {
     slug: "the-future-universe",
